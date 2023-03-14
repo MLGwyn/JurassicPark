@@ -124,7 +124,7 @@ namespace JurassicPark
             {
                 Console.WriteLine("\nNo Dinos Here.\n\nNo refunds either.\n ");
             }
-            else if (database.GetAllDinos().Count != 0)
+            else
             {
                 var response = PromptForString("Would you like to view by (N)ame or (P)en Location? ");
                 if (response == "N")
