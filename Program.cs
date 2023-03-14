@@ -120,26 +120,33 @@ namespace JurassicPark
         }
         private static void ViewDino(DinoDatabase database)
         {
-            var response = PromptForString("Would you like to view by (N)ame or (P)en Location? ");
-            if (response == "N")
+            if (database.GetAllDinos().Count == 0)
             {
-                var byName = database.GetAllDinos().OrderBy(d => d.Name);
-                foreach (var d in byName)
-                {
-                    d.Description();
-                }
+                Console.WriteLine("\nNo Dinos Here.\n\nNo refunds either.\n ");
             }
-            else if (response == "P")
+            else if (database.GetAllDinos().Count != 0)
             {
-                var byPen = database.GetAllDinos().OrderBy(d => d.EnclosureNumber);
-                foreach (var d in byPen)
+                var response = PromptForString("Would you like to view by (N)ame or (P)en Location? ");
+                if (response == "N")
                 {
-                    d.Description();
+                    var byName = database.GetAllDinos().OrderBy(d => d.Name);
+                    foreach (var d in byName)
+                    {
+                        d.Description();
+                    }
                 }
-            }
-            else
-            {
-                Console.WriteLine("I'm sorry I didn't understand.");
+                else if (response == "P")
+                {
+                    var byPen = database.GetAllDinos().OrderBy(d => d.EnclosureNumber);
+                    foreach (var d in byPen)
+                    {
+                        d.Description();
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("I'm sorry I didn't understand.");
+                }
             }
         }
         private static void RemoveDino(DinoDatabase database)
