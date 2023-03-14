@@ -4,19 +4,6 @@ using System.Linq;
 
 namespace JurassicPark
 {
-    class Dino
-    {
-        public string Name { get; set; }
-        public string DietType { get; set; }
-        public DateTime WhenAcquired { get; } = DateTime.Now;
-        public int Weight { get; set; }
-        public int EnclosureNumber { get; set; }
-        public void Description()
-        {
-            Console.WriteLine($"-{Name}-.\nDiet: {DietType}\nWeight: {Weight}lbs.\nReceived at: {WhenAcquired}\nPen Location: {EnclosureNumber}");
-        }
-
-    }
     class Program
     {
         static void DisplayGreeting()
@@ -78,7 +65,7 @@ namespace JurassicPark
         {
 
 
-            var dinos = new List<Dino>();
+            var database = new DinoDatabase();
 
             var keepGoing = true;
 
@@ -89,103 +76,115 @@ namespace JurassicPark
                 Console.WriteLine();
                 Console.WriteLine("What would you like to do?\n(V)iew\n(A)dd\n(R)emove\n(T)ransfer\n(S)ummary\n(Q)uit");
                 var choice = Console.ReadLine().ToUpper();
-                if (choice == "Q")
+                switch (choice)
                 {
-                    keepGoing = false;
+                    case "Q":
+                        keepGoing = false;
+                        break;
+                    case "S":
+                        DinoSummary(database);
+                        break;
+                    case "T":
+                        TransferDino(database);
+                        break;
+                    case "R":
+                        RemoveDino(database);
+                        break;
+                    case "A":
+                        AddDino(database);
+                        break;
+                    case "V":
+                        ViewDino(database);
+                        break;
+                    default:
+                        Console.WriteLine($"I'm sorry {choice} is not a valid option. ");
+                        break;
                 }
-                else if (choice == "S")
+            }
+        }
+        private static void TransferDino(DinoDatabase database)
+        {
+            var dinoToTransfer = PromptForString("What Dinosaur would you like to transfer? ");
+            var foundDino = database.FindADino(dinoToTransfer);
+            if (foundDino == null)
+            {
+                Console.WriteLine($"I'm sorry {dinoToTransfer} was not found. ");
+            }
+            else
+            {
+                Console.WriteLine($"{foundDino.Name} is in pen {foundDino.EnclosureNumber} ");
+                foundDino.EnclosureNumber = PromptForInteger("Where would you like to transfer them? ");
+                Console.WriteLine($"{foundDino.Name} is now in pen {foundDino.EnclosureNumber} ");
+
+            }
+        }
+        private static void ViewDino(DinoDatabase database)
+        {
+            var response = PromptForString("Would you like to view by (N)ame or (P)en Location? ");
+            if (response == "N")
+            {
+                var byName = database.GetAllDinos().OrderBy(d => d.Name);
+                foreach (var d in byName)
                 {
-                    var herbivores = dinos.Where(herb => herb.DietType == "Herbivore").Select(herb => herb.Name);
-                    var omnivores = dinos.Where(omn => omn.DietType == "Omnivore").Select(omn => omn.Name);
-                    Console.WriteLine($"There are {herbivores.Count()} herbivores: ");
-                    foreach (var herb in herbivores)
-                    {
-                        Console.WriteLine(herb);
-                    }
-                    Console.WriteLine($"There are {omnivores.Count()} omnivores: ");
-                    foreach (var omn in omnivores)
-                    {
-                        Console.WriteLine(omn);
-                    }
-
-
+                    d.Description();
                 }
-                else if (choice == "T")
+            }
+            else if (response == "P")
+            {
+                var byPen = database.GetAllDinos().OrderBy(d => d.EnclosureNumber);
+                foreach (var d in byPen)
                 {
-                    var dinoToTransfer = PromptForString("What Dinosaur would you like to transfer? ");
-                    var foundDino = dinos.FirstOrDefault(d => d.Name == dinoToTransfer);
-                    if (foundDino == null)
-                    {
-                        Console.WriteLine($"I'm sorry {dinoToTransfer} was not found. ");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"{foundDino.Name} is in pen {foundDino.EnclosureNumber} ");
-                        foundDino.EnclosureNumber = PromptForInteger("Where would you like to transfer them? ");
-                        Console.WriteLine($"{foundDino.Name} is now in pen {foundDino.EnclosureNumber} ");
-
-                    }
+                    d.Description();
                 }
-                else if (choice == "R")
+            }
+            else
+            {
+                Console.WriteLine("I'm sorry I didn't understand.");
+            }
+        }
+        private static void RemoveDino(DinoDatabase database)
+        {
+            var dinoToRemove = PromptForString("What Dinosaur would you like to remove? ");
+            var foundDino = database.FindADino(dinoToRemove);
+            if (foundDino == null)
+            {
+                Console.WriteLine($"I'm sorry {dinoToRemove} was not found. ");
+            }
+            else
+            {
+                foundDino.Description();
+                var response = PromptForString($"Are you sure you want to delete {foundDino.Name}? [Y/N] ");
+                if (response == "Y")
                 {
-                    var dinoToRemove = PromptForString("What Dinosaur would you like to remove? ");
-                    var foundDino = dinos.FirstOrDefault(d => d.Name == dinoToRemove);
-                    if (foundDino == null)
-                    {
-                        Console.WriteLine($"I'm sorry {dinoToRemove} was not found. ");
-                    }
-                    else
-                    {
-                        foundDino.Description();
-                        var response = PromptForString($"Are you sure you want to delete {foundDino.Name}? [Y/N] ");
-                        if (response == "Y")
-                        {
-                            dinos.Remove(foundDino);
-                            Console.WriteLine($"You have deleted {foundDino.Name}. ");
-                        }
-                    }
-
+                    database.RemoveDino(foundDino);
+                    Console.WriteLine($"You have deleted {foundDino.Name}. ");
                 }
-                else if (choice == "V")
-                {
-                    var response = PromptForString("Would you like to view by (N)ame or (P)en Location? ");
-                    if (response == "N")
-                    {
-                        var byName = dinos.OrderBy(d => d.Name);
-                        foreach (var d in byName)
-                        {
-                            d.Description();
-                        }
-                    }
-                    else if (response == "P")
-                    {
-                        var byPen = dinos.OrderBy(d => d.EnclosureNumber);
-                        foreach (var d in byPen)
-                        {
-                            d.Description();
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("I'm sorry I didn't understand.");
-                    }
-                }
-                else if (choice == "A")
-                {
-                    var dino = new Dino();
-                    dino.Name = PromptForString("Name of dinosaur? ");
-                    dino.DietType = PromptForDietType();
-                    dino.Weight = PromptForInteger("What is the dinosaurs weight in pounds? ");
-                    dino.EnclosureNumber = PromptForInteger("Pen location number? [1-500]");
-                    dino.Description();
+            }
+        }
+        private static void AddDino(DinoDatabase database)
+        {
+            var dino = new Dino();
+            dino.Name = PromptForString("Name of dinosaur? ");
+            dino.DietType = PromptForDietType();
+            dino.Weight = PromptForInteger("What is the dinosaurs weight in pounds? ");
+            dino.EnclosureNumber = PromptForInteger("Pen location number? [1-500]");
+            dino.Description();
 
-                    dinos.Add(dino);
-
-                }
-                else Console.WriteLine($"I'm sorry {choice} is not a valid option. ");
-
-
-
+            database.AddDino(dino);
+        }
+        private static void DinoSummary(DinoDatabase database)
+        {
+            var herbivores = database.GetAllDinos().Where(herb => herb.DietType == "Herbivore").Select(herb => herb.Name);
+            var omnivores = database.GetAllDinos().Where(omn => omn.DietType == "Omnivore").Select(omn => omn.Name);
+            Console.WriteLine($"There are {herbivores.Count()} herbivores: ");
+            foreach (var herb in herbivores)
+            {
+                Console.WriteLine(herb);
+            }
+            Console.WriteLine($"There are {omnivores.Count()} omnivores: ");
+            foreach (var omn in omnivores)
+            {
+                Console.WriteLine(omn);
             }
         }
     }
