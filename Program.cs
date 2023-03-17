@@ -8,13 +8,13 @@ namespace JurassicPark
     {
         static void DisplayGreeting()
         {
-            Console.WriteLine("          🔥                            🔥         ");
-            Console.WriteLine("         🔥🔥         WELCOME          🔥🔥         ");
-            Console.WriteLine("      🔥 🔥🔥🔥         TO          🔥 🔥🔥🔥       ");
-            Console.WriteLine("      🔥🔥🔥🔥🔥     JURASSIC       🔥🔥🔥🔥🔥    ");
-            Console.WriteLine("      🔥🔥🔥🔥🔥       PARK!        🔥🔥🔥🔥🔥   ");
-            Console.WriteLine("      🔥🔥🔥🔥🔥      🦖🦟🦕         🔥🔥🔥🔥      ");
-            Console.WriteLine("        🔥🔥🔥     ::cue music::      🔥🔥🔥        ");
+            Console.WriteLine("          🔥                            🔥");
+            Console.WriteLine("         🔥🔥         WELCOME          🔥🔥");
+            Console.WriteLine("      🔥 🔥🔥🔥         TO          🔥 🔥🔥🔥");
+            Console.WriteLine("      🔥🔥🔥🔥🔥     JURASSIC       🔥🔥🔥🔥🔥");
+            Console.WriteLine("      🔥🔥🔥🔥🔥       PARK!        🔥🔥🔥🔥🔥");
+            Console.WriteLine("      🔥🔥🔥🔥🔥      🦖🦟🦕         🔥🔥🔥🔥");
+            Console.WriteLine("        🔥🔥🔥     ::cue music::      🔥🔥");
         }
         static string PromptForString(string prompt)
         {
